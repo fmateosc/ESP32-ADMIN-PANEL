@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html class="no-js" lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>ESP32 | WiFi</title>
+    <!-- Favicon icon icono que sale en la web-->
+    <link rel="icon" href="logo.png" type="image/x-icon" />
+    <!-- Bootstrap -->
+    <link href="bootstrap.min.css" rel="stylesheet" media="screen" />
+    <link href="bootstrap-responsive.min.css" rel="stylesheet" media="screen" />
+    <link href="jquery.easy-pie-chart.css" rel="stylesheet" media="screen" />
+    <link href="sweetalert2.min.css" rel="stylesheet" media="screen" />
+    <link href="styles.css" rel="stylesheet" media="screen" />
+    <script src="modernizr.min.js"></script>
+  </head>
+
+  <body>
+    <div class="navbar navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container-fluid">
+          <a
+            class="btn btn-navbar"
+            data-toggle="collapse"
+            data-target=".nav-collapse"
+          >
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </a>
+          <a class="brand" href="/">ESP32 Admin Panel</a>
+          <div class="nav-collapse collapse">
+            <ul class="nav pull-right">
+              <li class="dropdown">
+                <a
+                  href="#"
+                  role="button"
+                  class="dropdown-toggle"
+                  data-toggle="dropdown"
+                >
+                  <i class="icon-user"></i> Admin <i class="caret"></i>
+                </a>
+                <ul class="dropdown-menu">
+                  <li>
+                    <a tabindex="-1" href="#">Salir</a>
+                  </li>
+                </ul>
+              </li>
+            </ul>
+          </div>
+          <!--/.nav-collapse -->
+        </div>
+      </div>
+    </div>
+    <div class="container-fluid">
+      <div class="row-fluid">
+        <!-- SideBar -->
+        <div class="span3" id="sidebar">
+          <ul class="nav nav-list bs-docs-sidenav nav-collapse collapse">
+            <li class="">
+              <a href="/"
+                ><i class="icon-chevron-right"></i
+                ><i class="icon-home pull-left"></i> Dashboard</a
+              >
+            </li>
+            <li class="">
+              <a href="configwifi"
+                ><i class="icon-chevron-right"></i
+                ><i class="icon-signal pull-left"></i> Wifi</a
+              >
+            </li>
+            <li class="active">
+              <a href="configsensores"
+                ><i class="icon-chevron-right"></i
+                ><i class="icon-th pull-left"></i> SENSORES</a
+              >
+            </li>
+            <li class="">
+              <a href="#" onclick="restablecer()"
+                ><i class="icon-arrow-down pull-left"></i
+                ><i class="icon-chevron-right"></i> Restablecer</a
+              >
+            </li>
+            <li class="">
+              <a href="#"
+                ><i class="icon-chevron-right"></i
+                ><i class="icon-refresh pull-left"></i> Reiniciar</a
+              >
+            </li>
+          </ul>
+        </div>
+        <!--/SideBar-->
+        <div class="span9" id="content">
+          <div class="row-fluid">
+            <div class="navbar">
+              <div class="navbar-inner">
+                <ul class="breadcrumb">
+                  <i class="icon-chevron-left hide-sidebar"
+                    ><a href="#" title="Hide Sidebar" rel="tooltip"
+                      >&nbsp;</a
+                    ></i
+                  >
+                  <i
+                    class="icon-chevron-right show-sidebar"
+                    style="display: none"
+                    ><a href="#" title="Show Sidebar" rel="tooltip"
+                      >&nbsp;</a
+                    ></i
+                  >
+                  <li>
+                    <a href="/">Dashboard</a> <span class="divider">/</span>
+                  </li>
+                  <li>
+                    <span class="label label-info"> Sensores</span>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          <div class="row-fluid">
+            <!-- block -->
+            <div class="block">
+              <div class="navbar navbar-inner block-header">
+                <div class="muted pull-left">Configure los valores máximos de los:</div>
+                <div class="pull-right">
+                  <span class="badge badge-warning">sensores de temperatura</span>
+                </div>
+              </div>
+              <div class="block-content collapse in">
+                <div class="span12">
+                  <form
+                    class="form-horizontal"
+                    name="config"
+                    action="confsensoresSave"
+                    method="post"
+                    id="formulario"
+                  >
+                    <fieldset>
+                      <legend >Todos los campos son obligatorios</legend>
+                      <!-- /TEMPERATURA 1 -->
+                      <div class="control-group">
+                        <label 
+                          class="control-label span3 pull-left" 
+                          style="margin-right: 20px;"
+                          for="temp1">Temperatura máxima frigorífico 1 (ºC):
+                        </label>
+                        <div class="controls">
+                          <input
+                            class="input-mini focused"                            
+                            id="temp1"
+                            name="temp1"
+                            type="text"
+                            value="#temp1#"
+                            placeholder="Temperatura máxima"
+                            maxlength="30"
+                          />
+                        </div>
+                      </div>
+                      <!-- /TEMPERATURA 2 -->
+                      <div class="control-group">
+                        <label 
+                          class="control-label span3 pull-left" 
+                          style="margin-right: 20px;"
+                          for="temp2">Temperatura máxima frigorífico 2 (ºC):
+                        </label>
+                        <div class="controls">
+                          <input
+                            class="input-mini focused"                            
+                            id="temp2"
+                            name="temp2"
+                            type="text"
+                            value="#temp2#"
+                            placeholder="Temperatura máxima"
+                            maxlength="30"
+                          />
+                        </div>
+                      </div>
+                      <!-- /TEMPERATURA 3 -->
+                      <div class="control-group">
+                        <label 
+                          class="control-label span3 pull-left" 
+                          style="margin-right: 20px;"
+                          for="temp3">Temperatura máxima frigorífico 3 (ºC):
+                        </label>
+                        <div class="controls">
+                          <input
+                            class="input-mini focused"                            
+                            id="temp3"
+                            name="temp3"
+                            type="text"
+                            value="#temp3#"
+                            placeholder="Temperatura máxima"
+                            maxlength="30"
+                          />
+                        </div>
+                      </div>
+                      <!-- /TEMPERATURA 4 -->
+                      <div class="control-group">
+                        <label 
+                          class="control-label span3 pull-left" 
+                          style="margin-right: 20px;"
+                          for="temp4">Temperatura máxima frigorífico 2 (ºC):
+                        </label>
+                        <div class="controls">
+                          <input
+                            class="input-mini focused"                            
+                            id="temp4"
+                            name="temp4"
+                            type="text"
+                            value="#temp4#"
+                            placeholder="Temperatura máxima"
+                            maxlength="30"
+                          />
+                        </div>
+                      </div>
+                      <!-- /Button -->
+                      <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">
+                          Guardar
+                        </button>
+                      </div>
+                    </fieldset>
+                  </form>
+                </div>
+              </div>
+            </div>
+            <!-- /block -->
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--/.fluid-container-->
+    <script src="jquery-1.9.1.min.js"></script>
+    <script src="bootstrap.min.js"></script>
+    <script src="jquery.easy-pie-chart.js"></script>
+    <script src="sweetalert2.min.js"></script>
+    <script src="scripts.js"></script>
+    <!--/Para Cambios en el PIE-->
+    <script>
+      $(function () {
+        // Easy pie charts
+        $(".chart").easyPieChart({
+          easing: "easeOutBounce",
+          //animate: 1000,
+          size: 150,
+        });
+      });
+    </script>
+  </body>
+</html>
