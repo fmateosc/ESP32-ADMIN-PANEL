@@ -10,6 +10,9 @@
 #include <SPIFFS.h>
 #include "esp32-hal-cpu.h"
 #include <DNSServer.h>
+#include <NTPClient.h>
+#include <ESP32Time.h>
+#include <Separador.h>
 
 /************** Archivos de Apoyo ******************/
 #include "header.hpp"
@@ -18,6 +21,8 @@
 #include "ConfigRead.hpp"
 #include "ConfigSave.hpp"
 #include "ESP32_WIFI.hpp"
+#include "ReadTemperature.hpp"
+#include "ConfigRtc.hpp"
 #include "Server.hpp"
 
 /************** Setup ******************/
@@ -51,20 +56,23 @@ void setup() {
   WiFi.onEvent(WiFiStationDisconnected, SYSTEM_EVENT_STA_DISCONNECTED);
   
   configWiFi();
+
+  /* Actualizamos la fecha y hora */
+  configRtc();
   
   // Telegram Bot
   WiFiClientSecure secured_client;
   UniversalTelegramBot bot(BOT_TOKEN, secured_client);
   // Add root certificate for api.telegram.org
-  secured_client.setCACert(TELEGRAM_CERTIFICATE_ROOT); 
- 
+  secured_client.setCACert(TELEGRAM_CERTIFICATE_ROOT);   
+
   /* Iniciamos el Server */
   InitServer();
 
   /* Listo */
   Serial.println(Blue + "Setup completado"); 
-    
-  //bot.sendMessage(CHAT_ID, "Bot inicializado", "");
+
+  bot.sendMessage(CHAT_ID, "Bot inicializado", "");
 }
 
 /************** Bucle Infinito ******************/

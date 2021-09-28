@@ -1,14 +1,10 @@
 /* Defines */
-//EEPROM
-#define EEPROM_SIZE 512 
 
 /* Variables Globales */
-// Variable para no bloquear la reconexion del MQTT
-long lastSendWS = 0; 
+
 // Tamaño del Objeto JSON
 const size_t JSON_CONFIG = JSON_OBJECT_SIZE(5) + 500;
-//New mqtt
-const size_t JSONMQTT_SIZE = JSON_OBJECT_SIZE(6) + 500; 
+
 
 // ID del dispositivo           
 char id[30];
@@ -23,15 +19,28 @@ char nameap[31];
 // Para ssid AP Password       
 char passwordap[63];  
 
-//Temperaturas 
+// Variables sensores de temperatura frigoríficos 
 int umbralTemp1, umbralTemp2, umbralTemp3, umbralTemp4;
+int tempFrigo1, tempFrigo2, tempFrigo3, tempFrigo4;
+String ultActu;
+
+// Variables to save date and time
+String formattedDate;
+String dayStamp;
+String timeStamp;
+int hora;
+int minutos;
+int segundos;
+int dia;
+int mes;
+int year;
 
 // Variable para Temperatura de CPU
 float TempCPU; 
 
 // Telegram
-char BOT_TOKEN[46];
-char CHAT_ID[10];
+char BOT_TOKEN[50];
+char CHAT_ID[11];
 
 
 /****************************************
@@ -57,6 +66,19 @@ uint8_t temprature_sens_read();
  ****************************************/
 const byte DNSSERVER_PORT = 53;
 DNSServer dnsServer;
+
+
+//Define NTP Client to get time
+WiFiUDP ntpUDP;
+NTPClient timeClient(ntpUDP);
+
+// Crea una instancia del RTC_INTERNO
+ESP32Time rtc;   
+
+//Crea una instancia del separador
+Separador s;
+
+
 
 
 

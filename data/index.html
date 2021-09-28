@@ -71,6 +71,18 @@
               >
             </li>
             <li class="">
+              <a href="configsensores"
+                ><i class="icon-chevron-right"></i
+                ><i class="icon-th pull-left"></i> SENSORES</a
+              >
+            </li>
+            <li class="">
+              <a href="configemails"
+                ><i class="icon-chevron-right"></i
+                ><i class="icon-envelope pull-left"></i> EMAILS</a
+              >
+            </li>
+            <li class="">
               <a href="#" onclick="restablecer()"
                 ><i class="icon-arrow-down pull-left"></i
                 ><i class="icon-chevron-right"></i> Restablecer</a
@@ -200,7 +212,7 @@
 
           <!-------------SENSORES------------->
           <div class="row-fluid">
-            <div class="span12">
+            <div class="span9">
               <!-- block -->
               <div class="block">
                 <div class="navbar navbar-inner block-header">
@@ -208,36 +220,71 @@
                 </div>
                 <div class="block-content collapse in">
                   <div class="span3">
-                    <div class="chart" id="chartWiFi" data-percent="#SENSOR1#">
-                      <span id="WiFiChart">#SENSOR1# ºC</span>
+                    <div class="chart" id="sensor1" data-percent="#temp1#">
+                      <span id="temp1">-- ºC</span>
                     </div>
                     <div class="chart-bottom-heading">
                       <span class="label label-info">FRIGORÍFICO 1</span>
                     </div>
                   </div>
                   <div class="span3">
-                    <div class="chart" id="chartPMEM" data-percent="#SENSOR2#">
-                      <span id="PMEMChart">#SENSOR2# ºC</span>
+                    <div class="chart" id="sensor2" data-percent="#SENSOR2#">
+                      <span id="temp2">-- ºC</span>
                     </div>
                     <div class="chart-bottom-heading">
                       <span class="label label-info">FRIGORÍFICO 2</span>
                     </div>
                   </div>
                   <div class="span3">
-                    <div class="chart" id="chartram" data-percent="#SENSOR3#">
-                      <span id="ramChart">#SENSOR3# ºC</span>
+                    <div class="chart" id="sensor3" data-percent="#SENSOR3#">
+                      <span id="temp3">-- ºC</span>
                     </div>
                     <div class="chart-bottom-heading">
                       <span class="label label-info">FRIGORÍFICO 3</span>
                     </div>
                   </div>
                   <div class="span3">
-                    <div class="chart" id="chartcpu" data-percent="#SENSOR4#">
-                      <span id="cpuChart">#SENSOR4# °C</span>
+                    <div class="chart" id="sensor4" data-percent="#SENSOR4#">
+                      <span id="temp4">-- ºC</span>
                     </div>
                     <div class="chart-bottom-heading">
                       <span class="label label-info">FRIGORÍFICO 4</span>
                     </div>
+                  </div>
+                </div>
+              </div>
+              <!-- /block -->
+            </div>
+
+            <div class="span3">
+              <!-- block -->
+              <div class="block">
+                <div class="navbar navbar-inner block-header">
+                  <div class="muted pull-left">
+                    INFORMACIÓN
+                  </div>
+                </div>
+
+                <div class="block-content collapse in">
+                  <div>
+                    <span class="label label-info">Última actualización:</span>
+                    <span id="ultActu">--</span>
+                  </div>
+                  <div>
+                    <span class="label label-info">FRIGORÍFICO 1:</span>
+                    <span id="frigo1">--</span>
+                  </div>
+                  <div>
+                    <span class="label label-info">FRIGORÍFICO 2:</span>
+                    <span id="frigo2">--</span>
+                  </div>
+                  <div>
+                    <span class="label label-info">FRIGORÍFICO 3:</span>
+                    <span id="frigo3">--</span>
+                  </div>
+                  <div>
+                    <span class="label label-info">FRIGORÍFICO 4:</span>
+                    <span id="frigo4">--</span>
                   </div>
                 </div>
               </div>
@@ -252,7 +299,6 @@
     <script src="bootstrap.min.js"></script>
     <script src="jquery.easy-pie-chart.js"></script>
     <script src="sweetalert2.min.js"></script>
-    <script src="gauge.min.js"></script>
     <script src="scripts.js"></script>
     <!--/Para Cambios en el PIE-->
     <script>
@@ -264,6 +310,69 @@
           size: 150,
         });
       });
+
+      let temperaturas;
+
+      //Obtenemos las temperaturas por medio de AJAX
+      function ajaxCall() {
+        var xmlhttp = new XMLHttpRequest();
+
+        xmlhttp.onreadystatechange = function () {
+          if (xmlhttp.readyState == XMLHttpRequest.DONE) {
+            if (xmlhttp.status == 200) {
+              temperaturas = xmlhttp.responseText;
+
+              temperaturas = temperaturas.split("@");
+
+              actualizarTemperaturas();
+            } else {
+              console.log("error", xmlhttp);
+            }
+          }
+        };
+
+        xmlhttp.open("GET", "getTemperatures", true);
+        xmlhttp.send();
+      }
+
+      function actualizarTemperaturas() {
+        let temp1 = document.getElementById('temp1');
+        let temp2 = document.getElementById('temp2');
+        let temp3 = document.getElementById('temp3');
+        let temp4 = document.getElementById('temp4');
+        let ultActu = document.getElementById('ultActu');
+        let frigo1 = document.getElementById('frigo1');
+        let frigo2 = document.getElementById('frigo2');
+        let frigo3 = document.getElementById('frigo3');
+        let frigo4 = document.getElementById('frigo4');
+
+        temp1.innerHTML = temperaturas[0] + " °C";
+        temp2.innerHTML = temperaturas[1] + " °C";
+        temp3.innerHTML = temperaturas[2] + " °C";
+        temp4.innerHTML = temperaturas[3] + " °C";
+        ultActu.innerHTML = temperaturas[4];
+        frigo1.innerHTML = temperaturas[0] + " °C";
+        frigo2.innerHTML = temperaturas[1] + " °C";
+        frigo3.innerHTML = temperaturas[2] + " °C";
+        frigo4.innerHTML = temperaturas[3] + " °C";
+
+        $(function () {
+          var chart = (window.chart = $("#sensor1").data("easyPieChart"));
+          chart.update(temperaturas[0]);
+          var chart = (window.chart = $("#sensor2").data("easyPieChart"));
+          chart.update(temperaturas[1]);
+          var chart = (window.chart = $("#sensor3").data("easyPieChart"));
+          chart.update(temperaturas[2]);
+          var chart = (window.chart = $("#sensor4").data("easyPieChart"));
+          chart.update(temperaturas[3]);
+        });
+      }
+
+      //Se actualiza cada 5 minutos (300000)
+      (function scheduleAjax() {
+        ajaxCall();
+        setTimeout(scheduleAjax, 60000);
+      })();
     </script>
   </body>
 </html>

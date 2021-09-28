@@ -18,45 +18,55 @@ void InitServer(){
     server.serveStatic("/glyphicons-halflings.png", SPIFFS, "/glyphicons-halflings.png").setDefaultFile("glyphicons-halflings.png");
     server.serveStatic("/glyphicons-halflings-white.png", SPIFFS, "/glyphicons-halflings-white.png").setDefaultFile("glyphicons-halflings-white.png");
     server.serveStatic("/logo.png", SPIFFS, "/logo.png").setDefaultFile("logo.png");
-    /**********************************************/
+    
+    /*********************INDEX.HTML*************************/
     server.on("/", HTTP_GET, [](AsyncWebServerRequest *request){
       // Index.html
       File file = SPIFFS.open(F("/index.html"), "r");
+      
       if (file){
         file.setTimeout(100);
+
         String s = file.readString();
+
         file.close();
+
         // Actualiza contenido dinamico del html
         s.replace(F("#id#"), id);
         s.replace(F("#serie#"), device_id);
+
         /* Bloque WIFI */
         s.replace(F("#WFEstatus#"), WiFi.status() == WL_CONNECTED ? F("<span class='label label-success'>CONECTADO</span>") : F("<span class='label label-important'>DESCONECTADO</span>"));
         s.replace(F("#WFSSID#"), WiFi.status() == WL_CONNECTED ? F(ssid) : F("--"));
         s.replace(F("#sysIP#"), ipStr(WiFi.status() == WL_CONNECTED ? WiFi.localIP() : WiFi.softAPIP()));
         s.replace(F("#WFDBM#"), WiFi.status() == WL_CONNECTED ? String(WiFi.RSSI()) : F("0"));
         s.replace(F("#WFPRC#"), WiFi.status() == WL_CONNECTED ? String(round(1.88 * (WiFi.RSSI() + 100)), 0) : F("0"));
+        
         /* Bloque pie chart */
         s.replace(F("#SWFI#"), WiFi.status() == WL_CONNECTED ? String(round(1.88 * (WiFi.RSSI() + 100)), 0) : F("0"));
         s.replace(F("#PMEM#"), String(round(SPIFFS.usedBytes() * 100 / SPIFFS.totalBytes()), 0));
         s.replace(F("#ram#"), String(ESP.getFreeHeap() * 100 / ESP.getHeapSize()));
         s.replace(F("#cpu#"), String(TempCPU));
+
         // Envia dados al navegador
         request->send(200, "text/html", s);  
       }else{
         request->send(500, "text/html", "<html><meta charset='UTF-8'><head><link href='bootstrap.min.css' rel='stylesheet' media='screen'><link rel='stylesheet' href='sweetalert2.min.css'>"
-                                                                                 "<script src='jquery-1.9.1.min.js'><script src='bootstrap.min.js'></script></script><script src='sweetalert2.min.js'></script></head><body><script>"
-                                                    "Swal.fire({title: 'Error!',"
-                                                               " text: 'Error 500 Internal Server Error',"
-                                                               " icon: 'error',"
-                                                               " confirmButtonText: 'Cerrar'}).then((result) => {"
-                                                                                                  "if (result.isConfirmed){"
-                                                                                                       "window.location = '/';"
-                                                                                                   "};"
-                                                                                               "})"
-                                                 "</script><body></html>");
-        log(F("\nError: Config - ERROR leyendo el archivo"));
+          "<script src='jquery-1.9.1.min.js'><script src='bootstrap.min.js'></script></script><script src='sweetalert2.min.js'></script></head><body><script>"
+            "Swal.fire({title: 'Error!',"
+              " text: 'Error 500 Internal Server Error',"
+              " icon: 'error',"
+              " confirmButtonText: 'Cerrar'}).then((result) => {"
+              "if (result.isConfirmed){"
+                    "window.location = '/';"
+                "};"
+            "})"
+          "</script><body></html>");
+
+        Serial.println(F("\nError: Config - ERROR leyendo el archivo"));  
       }
     });
+    
     /**********************************************/
     server.on("/configwifi", HTTP_GET, [](AsyncWebServerRequest *request){
         // Config
@@ -187,6 +197,12 @@ void InitServer(){
                                                   "</script><body></html>");
         }
     });
+  /**************************ACTUALIZA LAS TEMPERATURAS***********************************/
+  server.on("/getTemperatures", HTTP_GET, [](AsyncWebServerRequest *request) {
+    request->send(200, "text/plain", readTemperature());
+  });
+  /****************************************************************************************/
+
     /**********************************************/   
     server.onNotFound([](AsyncWebServerRequest *request) {
       request->send(404, "text/html", "<html><meta charset='UTF-8'><head><link href='bootstrap.min.css' rel='stylesheet' media='screen'><link rel='stylesheet' href='sweetalert2.min.css'>"
