@@ -22,7 +22,6 @@ boolean configSave(){
         jsonConfig["umbralTemp4"] = umbralTemp4;
 
         /* ------------------- TELEGRAM BOT -------------------- */
-        jsonConfig["BOT_TOKEN"] = BOT_TOKEN;
         jsonConfig["CHAT_ID"] = CHAT_ID;
 
         serializeJsonPretty(jsonConfig, file);

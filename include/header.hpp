@@ -41,7 +41,11 @@ float TempCPU;
 // Telegram
 char BOT_TOKEN[50];
 char CHAT_ID[11];
+String messageBot;
 
+// Temporizadores
+unsigned long lastTimeBotRan;
+int readTemperatureDelay = 60000;
 
 /****************************************
  * Sensor Temp Interno CPU
@@ -77,7 +81,6 @@ ESP32Time rtc;
 
 //Crea una instancia del separador
 Separador s;
-
 
 
 

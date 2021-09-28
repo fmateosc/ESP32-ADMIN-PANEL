@@ -29,7 +29,6 @@ boolean configRead(){
         umbralTemp4 = jsonConfig["umbralTemp4"];
 
         /* ------------------- TELEGRAM -------------------- */
-        strlcpy(BOT_TOKEN, jsonConfig["BOT_TOKEN"] | "", sizeof(BOT_TOKEN));
         strlcpy(CHAT_ID, jsonConfig["CHAT_ID"] | "", sizeof(CHAT_ID));
 
         file.close();

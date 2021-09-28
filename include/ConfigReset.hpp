@@ -16,6 +16,5 @@ void configReset(){
     umbralTemp4 = -14;
 
     /* ------------------- TELEGRAM -------------------- */
-    strlcpy(BOT_TOKEN, "2026069004:AAG2J6w3fPV32riTVTtbAtB2VPUA4QzAHpw", sizeof(BOT_TOKEN));
     strlcpy(CHAT_ID, "1174064360", sizeof(CHAT_ID));
 }
