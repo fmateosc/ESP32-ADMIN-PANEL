@@ -7,7 +7,7 @@ void configReset(){
 
     /* ------------------- AP -------------------- */
     strlcpy(nameap, deviceID().c_str(), sizeof(nameap));
-    strlcpy(passwordap, "iotcubaelectronica", sizeof(passwordap));
+    strlcpy(passwordap, "password", sizeof(passwordap));
 
     /* ------------------- UMBRAL TEMPERATURAS -------------------- */
     umbralTemp1 = -14;
