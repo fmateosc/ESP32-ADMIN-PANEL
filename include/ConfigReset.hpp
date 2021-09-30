@@ -17,4 +17,8 @@ void configReset(){
 
     /* ------------------- TELEGRAM -------------------- */
     strlcpy(CHAT_ID, "1174064360", sizeof(CHAT_ID));
+
+    /* ------------------- WATSAPP -------------------- */
+    strlcpy(apiKey, "730591", sizeof(apiKey));
+    strlcpy(phoneNumber, "+34625607134", sizeof(phoneNumber));
 }

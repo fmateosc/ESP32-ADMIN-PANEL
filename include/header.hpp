@@ -43,6 +43,12 @@ char BOT_TOKEN[50];
 char CHAT_ID[11];
 String messageBot;
 
+// WatsApp bot
+char apiKey[10];
+char phoneNumber[20];
+String url;
+int httpCode;
+
 // Temporizadores
 unsigned long lastTimeBotRan;
 int readTemperatureDelay = 60000;

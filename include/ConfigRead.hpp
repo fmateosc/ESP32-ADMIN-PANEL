@@ -31,11 +31,15 @@ boolean configRead(){
         /* ------------------- TELEGRAM -------------------- */
         strlcpy(CHAT_ID, jsonConfig["CHAT_ID"] | "", sizeof(CHAT_ID));
 
+        /* ------------------- WHATSAPP -------------------- */
+        strlcpy(apiKey, jsonConfig["apiKey"] | "", sizeof(apiKey));
+        strlcpy(phoneNumber, jsonConfig["phoneNumber"] | "", sizeof(phoneNumber));
+
         file.close();
 
         log("\nInfo: Lectura correcta configuración general");
 
-        return true;
+        return true;        
     }
 }
 

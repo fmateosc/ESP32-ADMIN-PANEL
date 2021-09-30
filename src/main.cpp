@@ -30,12 +30,6 @@
 // Telegram bot token
 #define BOT_TOKEN "2026069004:AAG2J6w3fPV32riTVTtbAtB2VPUA4QzAHpw"
 
-// WatsApp bot
-String apiKey = "730591";
-String phone_number  = "+34625607134";
-String url;
-int httpCode;
-
 WiFiClientSecure secured_client;
 UniversalTelegramBot bot(BOT_TOKEN, secured_client);
 
@@ -101,22 +95,22 @@ void loop() {
   if (millis() > lastTimeBotRan + readTemperatureDelay) {
     if (tempFrigo1 > umbralTemp1) {
       //sendMessageBotTelegram("frigorífico 1", tempFrigo1, umbralTemp1);
-      //sendMessageBotWatsApp("frigorífico 1", tempFrigo1, umbralTemp1);
+      sendMessageBotWatsApp("frigorífico 1", tempFrigo1, umbralTemp1);
     }
 
     if (tempFrigo2 > umbralTemp2) {
       //sendMessageBotTelegram("frigorífico 2", tempFrigo2, umbralTemp2);
-      //sendMessageBotWatsApp("frigorífico 2", tempFrigo2, umbralTemp2);
+      sendMessageBotWatsApp("frigorífico 2", tempFrigo2, umbralTemp2);
     }
 
     if (tempFrigo3 > umbralTemp3) {
       //sendMessageBotTelegram("frigorífico 3", tempFrigo3, umbralTemp3);
-      //sendMessageBotWatsApp("frigorífico 3", tempFrigo3, umbralTemp3);
+      sendMessageBotWatsApp("frigorífico 3", tempFrigo3, umbralTemp3);
     }
 
     if (tempFrigo4 > umbralTemp4) {
       //sendMessageBotTelegram("frigorífico 4", tempFrigo4, umbralTemp4);
-      //sendMessageBotWatsApp("frigorífico 4", tempFrigo4, umbralTemp4);
+      sendMessageBotWatsApp("frigorífico 4", tempFrigo4, umbralTemp4);
     }
 
     lastTimeBotRan = millis();    
@@ -140,7 +134,12 @@ void sendMessageBotWatsApp(String frigorifico, int tempFrigo, int tempUmbral) {
     messageBot += " ha superado la del umbral (" + String(tempUmbral) + " ºC)";
 
   // Adding all number, your api key, your message into one complete url
-  url = "https://api.callmebot.com/whatsapp.php?phone=" + phone_number + "&apikey=" + apiKey + "&text=" + urlencode(messageBot);
+  url = "https://api.callmebot.com/whatsapp.php?phone=" 
+    + String(phoneNumber) 
+    + "&apikey=" 
+    + String(apiKey) 
+    + "&text=" 
+    + urlencode(messageBot);
 
   // Calling postData to run the above-generated url once so that you will receive a message.
   postData(); 

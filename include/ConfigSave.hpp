@@ -24,6 +24,10 @@ boolean configSave(){
         /* ------------------- TELEGRAM BOT -------------------- */
         jsonConfig["CHAT_ID"] = CHAT_ID;
 
+        /* ------------------- WATSAPP -------------------- */
+        jsonConfig["apiKey"] = apiKey;
+        jsonConfig["phoneNumber"] = phoneNumber;
+
         serializeJsonPretty(jsonConfig, file);
 
         file.close();

@@ -232,92 +232,107 @@ void InitServer(){
 
       Serial.print(F("\nError: Config - ERROR leyendo el archivo"));
     }
-  });
+    });
 
-  /************************SAVE CONFIG SENSORES**********************/
-  server.on("/confsensoresSave", HTTP_POST, [](AsyncWebServerRequest *request){
-    String response;
+    /************************SAVE CONFIG SENSORES**********************/
+    server.on("/confsensoresSave", HTTP_POST, [](AsyncWebServerRequest *request){
+      String response;
 
-    StaticJsonDocument<300> doc;
+      StaticJsonDocument<300> doc;
 
-    // Graba Configuración desde Config
-    // Verifica número de campos recebidos
-    // ESP32 envia 4 campos
-    if (request->params() == 4){
-      String s;     
+      // Graba Configuración desde Config
+      // Verifica número de campos recebidos
+      // ESP32 envia 4 campos
+      if (request->params() == 4){
+        String s;     
 
-      // Temp1
-      if(request->hasArg("temp1"))
-      s = request->arg("temp1");
-      s.trim();
+        // Temp1
+        if(request->hasArg("temp1"))
+        s = request->arg("temp1");
+        s.trim();
 
-      if (s == ""){
-        s = umbralTemp1;
-      }
+        if (s == ""){
+          s = umbralTemp1;
+        }
 
-      umbralTemp1 = s.toInt();
-      
-      // Temp2
-      if(request->hasArg("temp2"))
-      s = request->arg("temp2");
-      s.trim();
+        umbralTemp1 = s.toInt();
+        
+        // Temp2
+        if(request->hasArg("temp2"))
+        s = request->arg("temp2");
+        s.trim();
 
-      if (s == ""){
-        s = umbralTemp2;
-      }
+        if (s == ""){
+          s = umbralTemp2;
+        }
 
-      umbralTemp2 = s.toInt();
+        umbralTemp2 = s.toInt();
 
-      // Temp3
-      if(request->hasArg("temp3"))
-      s = request->arg("temp3");
-      s.trim();
+        // Temp3
+        if(request->hasArg("temp3"))
+        s = request->arg("temp3");
+        s.trim();
 
-      if (s == ""){
-        s = umbralTemp3;
-      }
+        if (s == ""){
+          s = umbralTemp3;
+        }
 
-      umbralTemp3 = s.toInt();
+        umbralTemp3 = s.toInt();
 
-      // Temp4
-      if(request->hasArg("temp4"))
-      s = request->arg("temp4");
-      s.trim();
+        // Temp4
+        if(request->hasArg("temp4"))
+        s = request->arg("temp4");
+        s.trim();
 
-      if (s == ""){
-        s = umbralTemp4;
-      }
+        if (s == ""){
+          s = umbralTemp4;
+        }
 
-      umbralTemp4 = s.toInt();
-      
-      // Graba configuracion
-      if (configSave()){
-        request->send(200, "text/html", "<html><meta charset='UTF-8'><head><link href='bootstrap.min.css' rel='stylesheet' media='screen'><link rel='stylesheet' href='sweetalert2.min.css'>"
-          "<script src='jquery-1.9.1.min.js'><script src='bootstrap.min.js'></script></script><script src='sweetalert2.min.js'></script></head><body><script>"
-            "Swal.fire({title: 'Hecho!',"
-            " text: 'Configuración sensores guardada, se requiere reiniciar el Equipo',"
-            " icon: 'success',"
-            " showCancelButton: true,"
-            " confirmButtonColor: '#3085d6',"
-            " cancelButtonColor: '#d33',"
-            " confirmButtonText: 'Si, reiniciar',"
-            " cancelButtonText: 'Cancelar',"
-            " reverseButtons: true"
-            " }).then((result) => {"
-                "if (result.isConfirmed){"
-                    "window.location = 'reboot';"
-                "}else if ("
-                    "result.dismiss === Swal.DismissReason.cancel"
-                  "){"
-                    "history.back();"
-                  "}"
-              "})"
-          "</script><body></html>");
+        umbralTemp4 = s.toInt();
+        
+        // Graba configuracion
+        if (configSave()){
+          request->send(200, "text/html", "<html><meta charset='UTF-8'><head><link href='bootstrap.min.css' rel='stylesheet' media='screen'><link rel='stylesheet' href='sweetalert2.min.css'>"
+            "<script src='jquery-1.9.1.min.js'><script src='bootstrap.min.js'></script></script><script src='sweetalert2.min.js'></script></head><body><script>"
+              "Swal.fire({title: 'Hecho!',"
+              " text: 'Configuración sensores guardada, se requiere reiniciar el Equipo',"
+              " icon: 'success',"
+              " showCancelButton: true,"
+              " confirmButtonColor: '#3085d6',"
+              " cancelButtonColor: '#d33',"
+              " confirmButtonText: 'Si, reiniciar',"
+              " cancelButtonText: 'Cancelar',"
+              " reverseButtons: true"
+              " }).then((result) => {"
+                  "if (result.isConfirmed){"
+                      "window.location = 'reboot';"
+                  "}else if ("
+                      "result.dismiss === Swal.DismissReason.cancel"
+                    "){"
+                      "history.back();"
+                    "}"
+                "})"
+            "</script><body></html>");
+        }else{
+          request->send(200, "text/html", "<html><meta charset='UTF-8'><head><link href='bootstrap.min.css' rel='stylesheet' media='screen'><link rel='stylesheet' href='sweetalert2.min.css'>"
+            "<script src='jquery-1.9.1.min.js'><script src='bootstrap.min.js'></script></script><script src='sweetalert2.min.js'></script></head><body><script>"
+              "Swal.fire({title: 'Error!',"
+              " text: 'No se pudo guardar, Falló la configuración de los sensores',"
+              " icon: 'error',"
+              " confirmButtonText: 'Cerrar'}).then((result) => {"
+                  "if (result.isConfirmed){"
+                      "history.back();"
+                  "};"
+                "})"
+            "</script><body></html>");
+
+          Serial.println(F("\nError: ConfigSave - ERROR salvando Configuración"));
+        }
       }else{
         request->send(200, "text/html", "<html><meta charset='UTF-8'><head><link href='bootstrap.min.css' rel='stylesheet' media='screen'><link rel='stylesheet' href='sweetalert2.min.css'>"
           "<script src='jquery-1.9.1.min.js'><script src='bootstrap.min.js'></script></script><script src='sweetalert2.min.js'></script></head><body><script>"
             "Swal.fire({title: 'Error!',"
-            " text: 'No se pudo guardar, Falló la configuración de los sensores',"
+            " text: 'No se pudo guardar, Error de parámetros de los sensores',"
             " icon: 'error',"
             " confirmButtonText: 'Cerrar'}).then((result) => {"
                 "if (result.isConfirmed){"
@@ -325,24 +340,124 @@ void InitServer(){
                 "};"
               "})"
           "</script><body></html>");
-
-        Serial.println(F("\nError: ConfigSave - ERROR salvando Configuración"));
       }
-    }else{
-      request->send(200, "text/html", "<html><meta charset='UTF-8'><head><link href='bootstrap.min.css' rel='stylesheet' media='screen'><link rel='stylesheet' href='sweetalert2.min.css'>"
-        "<script src='jquery-1.9.1.min.js'><script src='bootstrap.min.js'></script></script><script src='sweetalert2.min.js'></script></head><body><script>"
-          "Swal.fire({title: 'Error!',"
-          " text: 'No se pudo guardar, Error de parámetros de los sensores',"
-          " icon: 'error',"
-          " confirmButtonText: 'Cerrar'}).then((result) => {"
-              "if (result.isConfirmed){"
-                  "history.back();"
-              "};"
-            "})"
-        "</script><body></html>");
-    }
-  });
+    });
 
+    /*********************CONFIG WATSAPP HTML*************************/
+    server.on("/configwhatsapp", HTTP_GET, [](AsyncWebServerRequest *request){
+      // Config
+      File file = SPIFFS.open(F("/configwhatsapp.html"), "r");
+
+      if (file){
+        file.setTimeout(100);
+
+        String s = file.readString();
+
+        file.close();
+
+        // Atualiza el contenido al cargar
+        s.replace(F("#apiKey#"), apiKey);
+        s.replace(F("#numTelefono#"), phoneNumber);
+
+        request->send(200, "text/html", s);
+      }else{
+        request->send(500, "text/html", "<html><meta charset='UTF-8'><head><link href='bootstrap.min.css' rel='stylesheet' media='screen'><link rel='stylesheet' href='sweetalert2.min.css'>"
+                                                                                "<script src='jquery-1.9.1.min.js'><script src='bootstrap.min.js'></script></script><script src='sweetalert2.min.js'></script></head><body><script>"
+                                                    "Swal.fire({title: 'Error!',"
+                                                              " text: 'Error 500 Internal Server Error',"
+                                                              " icon: 'error',"
+                                                              " confirmButtonText: 'Cerrar'}).then((result) => {"
+                                                                                                  "if (result.isConfirmed){"
+                                                                                                      "window.location = '/';"
+                                                                                                  "};"
+                                                                                              "})"
+                                                "</script><body></html>");
+        log(F("\nError: Config - ERROR leyendo el archivo"));
+      }
+    });
+    /*********************SAVE CONFIG WATSAPP*************************/
+    server.on("/confWatsAppSave", HTTP_POST, [](AsyncWebServerRequest *request){
+        String response;
+        StaticJsonDocument<300> doc;
+        // Graba Configuración desde Config
+        // Verifica número de campos recebidos
+        // ESP32 envia 2 campos
+        if (request->params() == 2){
+          String s;
+          // Api Key
+          if(request->hasArg("apiKey"))
+          s = request->arg("apiKey");
+          s.trim();
+
+          if (s == ""){
+            s = apiKey;
+          }
+
+          strlcpy(apiKey, s.c_str(), sizeof(apiKey));
+
+          // Nº teléfono
+          if(request->hasArg("numTelefono"))
+          s = request->arg("numTelefono");
+          s.trim();
+
+          if (s == ""){
+            s = phoneNumber;
+          }
+
+          strlcpy(phoneNumber, s.c_str(), sizeof(phoneNumber));
+          
+          // Graba configuracion
+          if (configSave()){
+            request->send(200, "text/html", 
+              "<html><meta charset='UTF-8'><head><link href='bootstrap.min.css' rel='stylesheet' media='screen'><link rel='stylesheet' href='sweetalert2.min.css'>"
+                                            "<script src='jquery-1.9.1.min.js'><script src='bootstrap.min.js'></script></script><script src='sweetalert2.min.js'></script></head><body><script>"
+                                                      "Swal.fire({title: 'Hecho!',"
+                                                                " text: 'Configuración WatsApp guardada, se requiere reiniciar el Equipo',"
+                                                                " icon: 'success',"
+                                                                " showCancelButton: true,"
+                                                                " confirmButtonColor: '#3085d6',"
+                                                                " cancelButtonColor: '#d33',"
+                                                                " confirmButtonText: 'Si, reiniciar',"
+                                                                " cancelButtonText: 'Cancelar',"
+                                                                " reverseButtons: true"
+                                                                " }).then((result) => {"
+                                                                              "if (result.isConfirmed){"
+                                                                                  "window.location = 'reboot';"
+                                                                              "}else if ("
+                                                                                  "result.dismiss === Swal.DismissReason.cancel"
+                                                                                "){"
+                                                                                  "history.back();"
+                                                                                "}"
+                                                                          "})"
+                                                  "</script><body></html>");
+          }else{
+            request->send(200, "text/html", "<html><meta charset='UTF-8'><head><link href='bootstrap.min.css' rel='stylesheet' media='screen'><link rel='stylesheet' href='sweetalert2.min.css'>"
+                                                                                  "<script src='jquery-1.9.1.min.js'><script src='bootstrap.min.js'></script></script><script src='sweetalert2.min.js'></script></head><body><script>"
+                                                      "Swal.fire({title: 'Error!',"
+                                                                " text: 'No se pudo guardar, Falló la configuración WIFI',"
+                                                                " icon: 'error',"
+                                                                " confirmButtonText: 'Cerrar'}).then((result) => {"
+                                                                                                    "if (result.isConfirmed){"
+                                                                                                        "history.back();"
+                                                                                                    "};"
+                                                                                                "})"
+                                                  "</script><body></html>");
+            log(F("\nError: ConfigSave - ERROR salvando Configuración"));
+          }
+        }else{
+            request->send(200, "text/html", "<html><meta charset='UTF-8'><head><link href='bootstrap.min.css' rel='stylesheet' media='screen'><link rel='stylesheet' href='sweetalert2.min.css'>"
+                                                                                  "<script src='jquery-1.9.1.min.js'><script src='bootstrap.min.js'></script></script><script src='sweetalert2.min.js'></script></head><body><script>"
+                                                      "Swal.fire({title: 'Error!',"
+                                                                " text: 'No se pudo guardar, Error de parámetros WIFI',"
+                                                                " icon: 'error',"
+                                                                " confirmButtonText: 'Cerrar'}).then((result) => {"
+                                                                                                    "if (result.isConfirmed){"
+                                                                                                        "history.back();"
+                                                                                                    "};"
+                                                                                                "})"
+                                                  "</script><body></html>");
+        }
+    });
 
     /**************************ACTUALIZA LAS TEMPERATURAS***********************************/
     server.on("/getTemperatures", HTTP_GET, [](AsyncWebServerRequest *request) {
